@@ -4,7 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build"
+    "build": "ng build --prod --output-hashing none",
+    "mergejsbash": "cat ./dist/custome-component/runtime.js ./dist/custome-component/polyfills.js ./dist/custome-component/main.js > ./dist/custome-component/web-text-element.js",
+    "mergejs": "node ./merge-scripts.js",
+    "replace-script": "node ./replace-script.js",
+    "build-coponent": "npm run build && npm run mergejs && npm run replace-script"
   },
   "private": true,
   "dependencies": {
@@ -12,10 +16,12 @@
     "@angular/common": "~11.2.14",
     "@angular/compiler": "~11.2.14",
     "@angular/core": "~11.2.14",
+    "@angular/elements": "^11.2.14",
     "@angular/forms": "~11.2.14",
     "@angular/platform-browser": "~11.2.14",
     "@angular/platform-browser-dynamic": "~11.2.14",
     "@angular/router": "~11.2.14",
+    "document-register-element": "^1.7.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"
