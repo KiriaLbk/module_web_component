@@ -1,0 +1,13 @@
+<div class="igx-group-label">
+  <div class="group-header-cell" [style.width.px]="47" [style.padding]="0">
+    <igx-checkbox class="row-selector-checkbox"> </igx-checkbox>
+  </div>
+  <div class="group-header-cell" [style.width.px]="65">
+    {{ groupRow.records.length }}
+  </div>
+  <ng-container *ngFor="let groupCol of headerGroupingRow; let i = index">
+    <div class="group-header-cell" [style.width.px]="groupCol.width">
+      {{ groupCol.data }}
+    </div>
+  </ng-container>
+</div>

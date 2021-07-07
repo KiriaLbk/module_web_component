@@ -1,0 +1,123 @@
+<div class="igx-table-paginator" [style.background]="buttonPagin || infoPagin ? 'rgba(255, 255, 255, 1)' : ''">
+  <div
+    class="igx-table-paginator__action-buttons"
+    *ngIf="paginatorConfig.paginFormat.isShowButtonInfo || paginatorConfig.paginFormat.isShowButtonPagin"
+  >
+    <!--      'Показать информацию'-->
+    <!--      'Скрыть информацию'-->
+    <button
+      *ngIf="paginatorConfig.paginFormat.isShowButtonInfo"
+      class="igx-table-paginator__action-button"
+      [attr.tooltipCss]="!infoPagin ? lang.word['SHOW_INFO'] : lang.word['HIDE_INFO']"
+      flow="up"
+      [style.opacity]="infoPagin ? '0.7' : ''"
+      (click)="infoPaginator()"
+    >
+      <img src="/assets/imgs/icons/infoPaginator.svg" />
+    </button>
+
+    <!--      'Показать пагинатор' : 'Скрыть пагинатор'-->
+    <button
+      *ngIf="paginatorConfig.paginFormat.isShowButtonPagin"
+      class="igx-table-paginator__action-button"
+      [attr.tooltipCss]="!buttonPagin ? lang.word['SHOW_PAGINATOR'] : lang.word['HIDE_PAGINATOR']"
+      flow="up"
+      [style.opacity]="buttonPagin ? '0.7' : ''"
+      (click)="buttonPaginator()"
+    >
+      <img src="/assets/imgs/icons/buttonPaginator.svg" />
+    </button>
+  </div>
+
+  <div
+    class="igx-table-paginator__elements-info"
+    [class.igx-table-paginator__elements-info_opened]="infoPagin"
+    [class.customInformation]="paginatorTemplate && infoPagin"
+    *ngIf="paginatorConfig.paginFormat.isShowButtonInfo"
+  >
+    <ng-container [ngTemplateOutlet]="paginatorTemplate"></ng-container>
+    {{ lang.word['ELEMENTS_ON_THE_PAGE'] }} {{ currentCount }} {{ lang.word['OF'] }} {{ totalCount }}
+  </div>
+  <div class="igx-table-paginator__page-switcher" [class.igx-table-paginator__page-switcher_closed]="!buttonPagin">
+    <div class="openLine" *ngIf="paginatorConfig.paginFormat.isShowLine">
+      <img src="/assets/imgs/icons/bandSvg.svg" />
+    </div>
+
+    <button
+      class="igx-table-paginator__page-switcher-button"
+      [disabled]="firstPage"
+      (click)="paginate(0, false)"
+      igxButton="icon"
+      igxRipple
+      igxRippleCentered="true"
+      *ngIf="paginatorConfig.paginFormat.isShowPagesButtons"
+    >
+      <img [style.opacity]="firstPage ? '0.5' : ''" src="/assets/imgs/icons/first_page.svg" />
+    </button>
+
+    <button
+      class="igx-table-paginator__page-switcher-button"
+      [disabled]="firstPage"
+      (click)="previousPage()"
+      igxButton="icon"
+      igxRipple
+      igxRippleCentered="true"
+    >
+      <img [style.opacity]="firstPage ? '0.5' : ''" src="/assets/imgs/icons/chevron_left.svg" />
+    </button>
+
+    <igx-select
+      class="igx-table-paginator__page-selection"
+      (onSelection)="parseToInt($event.newSelection.value)"
+      [(ngModel)]="_perPage"
+      *ngIf="paginatorConfig.paginFormat.isShowSelect"
+    >
+      <igx-select-item *ngFor="let val of pageSizes" [value]="val">
+        {{ val }}
+      </igx-select-item>
+    </igx-select>
+
+    <div class="igx-table-paginator__page" [style.marginLeft]="!paginatorConfig.paginFormat.isShowSelect ? '0' : ''">
+      <div class="igx-table-paginator__page-info">
+        <input
+          #pageInput
+          class="igx-table-paginator__page-value"
+          [class.invalid]="invalidPaginate"
+          size="{{ pageInput.value.length || 1 }}"
+          [value]="pageShow"
+          (change)="paginate(+$event.target['value'] - 1, true)"
+          (input)="buttonDeselection(+$event.target['value'] - 1, totalPages)"
+        />
+      </div>
+      <div class="igx-table-paginator__page-info">
+        <span class="igx-table-paginator__page-info-text">{{ lang.word['OF'] }}</span>
+      </div>
+      <div class="igx-table-paginator__page-info">
+        <span class="igx-table-paginator__page-info-text">{{ totalPages }}</span>
+      </div>
+    </div>
+
+    <button
+      class="igx-table-paginator__page-switcher-button"
+      [disabled]="lastPage"
+      (click)="nextPage()"
+      igxRipple
+      igxRippleCentered="true"
+      igxButton="icon"
+    >
+      <img [style.opacity]="lastPage ? '0.5' : ''" src="/assets/imgs/icons/chevron_right.svg" />
+    </button>
+
+    <button
+      class="igx-table-paginator__page-switcher-button"
+      [disabled]="lastPage"
+      (click)="paginate(totalPages - 1, false)"
+      igxButton="icon"
+      igxRipple
+      igxRippleCentered="true"
+      *ngIf="paginatorConfig.paginFormat.isShowPagesButtons"
+    >
+      <img [style.opacity]="lastPage ? '0.5' : ''" src="/assets/imgs/icons/last_page.svg" />
+    </button>
+  </div>
+</div>

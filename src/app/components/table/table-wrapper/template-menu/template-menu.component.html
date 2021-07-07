@@ -1,0 +1,97 @@
+<div
+  class="chooserSelect"
+  *ngIf="config.gridConfig.templateAdding"
+  tooltipCss="Выбор шаблона"
+  flow="left"
+  mat-button
+  [matMenuTriggerFor]="templateTable"
+  (click)="getTemplate()"
+>
+  <mat-icon>extension</mat-icon>
+  <mat-menu #templateTable="matMenu" class="templatesTable" (closed)="show()">
+    <div class="createMenu" (click)="$event.stopPropagation()">
+      <ng-container *ngIf="showIconTemplate">
+        <div class="mat-menu-item" (click)="changeMenuState()">
+          <mat-icon class="icon-template-main">add</mat-icon>
+          <span>Новый шаблон</span>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!showIconTemplate">
+        <div class="mat-menu-item" (click)="cancelCreate()">
+          <mat-icon class="icon-template-main">clear</mat-icon>
+          <span>Отменить создание</span>
+        </div>
+      </ng-container>
+      <div [formGroup]="form" class="createTemplate {{ showIconTemplate ? 'hidden' : 'visible' }}">
+        <!--        <lib-wbd-input-->
+        <!--          formControlName="templateName"-->
+        <!--          initPlaceholder="Имя шаблона"-->
+        <!--          (keyDownEmmiter)="createTemplate()"-->
+        <!--        ></lib-wbd-input>-->
+
+        <input
+          class="newTemplateName"
+          formControlName="templateName"
+          (keyup.enter)="createTemplate()"
+          type="text"
+          placeholder="Имя шаблона"
+        />
+
+        <p
+          style="font-size: 11px; color: red; padding: 0 10px; margin-bottom: 0; max-width: 200px"
+          *ngIf="form.touched && form.get('templateName')?.errors?.minlength"
+        >
+          Имя должно быть длиной не менее 4 символов.
+        </p>
+
+        <button class="mat-menu-item saveNewTemplate" [disabled]="!form.valid" (click)="createTemplate()">
+          Сохранить шаблон
+        </button>
+      </div>
+    </div>
+    <div
+      class="templates"
+      [class.loading]="!customTemplateLoad"
+      (click)="!showIconTemplate ? $event.stopPropagation() : showIconTemplate"
+    >
+      <button mat-menu-item (click)="changeTemplate('0')" [disabled]="!showIconTemplate">
+        <mat-icon class="icon-template-main" *ngIf="activeTemplate === '0'">done</mat-icon>
+        <span class="{{ activeTemplate === '0' ? '' : 'no-active-default' }}">Вид по умолчанию</span>
+      </button>
+      <ng-container *ngFor="let temp of config.templatesTable">
+        <button mat-menu-item (click)="changeTemplate(temp['field'])" [disabled]="!showIconTemplate">
+          <mat-icon
+            class="icon-template-main"
+            *ngIf="activeTemplate === temp['field']"
+            (mouseenter)="showIconTemplate && temp['custom'] ? changeIconType('delete') : changeIconType('done')"
+            (mouseleave)="changeIconType('done')"
+            (click)="
+              icon === 'delete' && showIconTemplate && temp['custom']
+                ? deleteCurrentTemplate($event, temp['field'])
+                : ''
+            "
+            >{{ icon }}</mat-icon
+          >
+          <mat-icon
+            class="icon-template"
+            *ngIf="activeTemplate !== temp['field'] && showIconTemplate && temp['custom']"
+            (click)="deleteTemplate($event, temp['field'])"
+            >delete</mat-icon
+          >
+          <span
+            class="{{
+              (activeTemplate !== temp['field'] && !showIconTemplate) ||
+              (activeTemplate !== temp['field'] && !temp['custom'])
+                ? 'no-active-default'
+                : ''
+            }}"
+            >{{ temp['name'] }}</span
+          >
+        </button>
+      </ng-container>
+      <div *ngIf="!customTemplateLoad" class="spinner_container">
+        <mat-spinner [diameter]="20" style="margin: 5px auto"></mat-spinner>
+      </div>
+    </div>
+  </mat-menu>
+</div>

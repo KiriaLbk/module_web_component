@@ -1,0 +1,18 @@
+<ng-container *ngFor="let col of columns">
+  <igx-column
+    *ngIf="!col.childs || !col.childs.length; else groupColumns"
+    [movable]="col.movable"
+    [sortable]="col.sortable"
+    [resizable]="col.resizable"
+    [field]="col.field"
+    [header]="col.name"
+    [filterable]="col.filterable"
+  >
+  </igx-column>
+
+  <ng-template #groupColumns>
+    <igx-column-group [header]="col.name">
+      <app-group-columns [columns]="col.childs"></app-group-columns>
+    </igx-column-group>
+  </ng-template>
+</ng-container>

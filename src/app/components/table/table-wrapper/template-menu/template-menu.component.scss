@@ -1,0 +1,166 @@
+@import '~scss/tooltip';
+
+:host ::ng-deep {
+  .templatesTable {
+    .mat-select-arrow {
+      opacity: 0;
+    }
+    .mat-select-value {
+      display: none;
+    }
+    .mat-select-arrow-wrapper {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+.chooserSelect {
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 3px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chooserSelect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+mat-icon {
+  vertical-align: middle;
+  color: black;
+  opacity: 0.4;
+  height: 20px;
+  width: 20px;
+  font-size: 20px;
+  transition: 0.3s;
+  z-index: -1;
+}
+.chooserSelect:hover mat-icon {
+  opacity: 0.8;
+}
+.icon-template-main {
+  opacity: 0.8;
+  transition: 0.3s;
+}
+.icon-template-main:hover {
+  opacity: 1;
+}
+.icon-template,
+.delete-icon {
+  opacity: 0;
+}
+::ng-deep .mat-menu-item {
+  width: 200px;
+  height: 35px;
+  line-height: 0 !important;
+  padding: 10px !important;
+  font-size: 13px;
+}
+.mat-menu-item:hover .icon-template {
+  opacity: 0.6;
+}
+.mat-menu-item:hover .icon-template:hover {
+  opacity: 1;
+}
+.templates {
+  //min-height: 105px;
+  min-height: 40px;
+  height: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.loading {
+  overflow: hidden;
+}
+.no-active-default {
+  margin-left: 27px;
+}
+.templatesTable {
+  transition: 0.3s;
+}
+.saveNewTemplate {
+  text-align: center;
+  font-weight: bold;
+  border-color: #b7b7b7;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+.saveNewTemplate:hover {
+  transition: 0.3s;
+  background-color: transparent;
+  opacity: 1;
+}
+::ng-deep .panel {
+  height: 100px;
+}
+.createTemplate {
+  overflow: hidden;
+  transition: height 0.3s, transform 0.3s;
+}
+.createTemplate.hidden {
+  height: 0;
+  transition: height 0.3s, transform 0.3s;
+}
+.createTemplate.visible {
+  height: auto;
+  transition: height 0.3s, transform 0.3s;
+}
+.newTemplateName {
+  display: block;
+  height: 25px;
+  width: 180px !important;
+  padding: 5px 10px;
+  margin: 5px 10px !important;
+  border-width: 0;
+  border-radius: 16px;
+  background: #f1f1f1;
+  font-size: 13px;
+  transition: 0.3s;
+
+  &:hover {
+    background: #e6e6e6;
+    transition: 0.3s;
+  }
+
+  &:focus {
+    background: transparent;
+    border: 1px solid #999999;
+    border-radius: 16px;
+    transition: 0.3s;
+    outline: none;
+  }
+}
+
+.newTemplateName.ng-dirty.ng-invalid {
+  border: 1px solid red;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-button {
+  background-color: #ede5e3;
+  height: 0;
+}
+::-webkit-scrollbar-track {
+  background-color: #999;
+}
+::-webkit-scrollbar-track-piece {
+  background-color: #fafafa;
+}
+::-webkit-scrollbar-thumb {
+  height: 50px;
+  background-color: #c1c1c1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-corner {
+  background-color: #999;
+}

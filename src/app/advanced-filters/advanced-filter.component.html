@@ -1,0 +1,71 @@
+<div class="dialog_container" [@changeAdvance]="changeAdvance">
+  <div class="header">
+    <div class="basket" (click)="deleteAllFilter()" tooltipCss="Удалить все фильтры" flow="right">
+      <img src="/assets/imgs/icons/basket.svg" />
+    </div>
+    <div class="text">Расширенная фильтрация</div>
+    <div
+      class="closeContainer"
+      data-dismiss="modal"
+      aria-label="Close"
+      tooltipCss="Закрыть окно"
+      flow="left"
+      (click)="close()"
+    >
+      <i class="material-icons">close</i>
+    </div>
+  </div>
+
+  <div class="filter_content">
+    <ng-container></ng-container>
+    <div class="filterRow" *ngFor="let filter of advanced.advancedFilters; let i = index">
+      <div class="select">
+        <lib-wb-select
+          class="field"
+          [label]="'Столбец'"
+          [selectedOptions]="filter.field"
+          [initPlaceholder]="filter.name"
+          [options]="availableOptions"
+          optionKey="field"
+          optionLabel="name"
+          (valuesChange)="setPropertyValue($event, filter)"
+        >
+        </lib-wb-select>
+      </div>
+
+      <div class="select">
+        <lib-wb-select
+          class="value"
+          [label]="'Значение'"
+          [multiple]="true"
+          [selectedOptions]="filter.value"
+          [initPlaceholder]="filter.value.join(',')"
+          [options]="getSelectValues"
+          (initializeParams)="$event.setParams(filter.field)"
+          [optionKey]="filter.field"
+          [optionLabel]="filter.field"
+          [optionsFormat]="filter.dataType"
+          (valuesChange)="setSignificationValue($event, filter)"
+        >
+        </lib-wb-select>
+      </div>
+      <div class="button_remove" (click)="deleteFilter(filter, i)">
+        <mat-icon svgIcon="appSvg:reset_filters"></mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="add_filter">
+    <button class="add_button" (click)="addNewFilter()">
+      <span>
+        <mat-icon class="cross" [svgIcon]="'appSvg:add_button_icon'"></mat-icon>
+      </span>
+      <span class="add">Добавить фильтр</span>
+    </button>
+  </div>
+
+  <div class="filter_buttons">
+    <button class="filter" (click)="filterStart()">Отфильтровать</button>
+    <button class="reset" (click)="resetFilters()">Сбросить фильтр</button>
+  </div>
+</div>

@@ -1,0 +1,553 @@
+<div class="density-chooser">
+  <div class="commonBlock" *ngIf="config.gridConfig.isControlButtons">
+    <div class="control-panel" *ngIf="controls">
+      <ng-container [ngTemplateOutlet]="controls"></ng-container>
+    </div>
+    <!--      Удалить все фильтры-->
+    <div
+      class="deleteFilters"
+      (click)="clearFilters()"
+      [attr.tooltipCss]="'DELETE_ALL_FILTERS' | wbTranslate"
+      flow="left"
+    >
+      <img src="/assets/imgs/icons/deleteFilters.svg" [class.activity]="table.activeFilters.length" />
+    </div>
+
+    <!--      Расширенный фильтр-->
+    <ng-container *ngIf="config.gridConfig.advancedFilters">
+      <div
+        class="deleteFilters"
+        (click)="createAdvancedFiltersWindow()"
+        [attr.tooltipCss]="'' | wbTranslate"
+        flow="left"
+      >
+        <img src="/assets/imgs/icons/advancedFilters.svg" />
+        <div *ngIf="table.activeFilters.length" class="filters-count">
+          {{ table.activeFilters.length }}
+        </div>
+      </div>
+    </ng-container>
+
+    <!--      Настройка столбцов-->
+    <ng-container *ngIf="config.gridConfig.columnHiding">
+      <div
+        class="visible"
+        #settings
+        (click)="chooseColumnHiding()"
+        [attr.tooltipCss]="'COLUMN_SETTING' | wbTranslate"
+        flow="left"
+      >
+        <img src="/assets/imgs/icons/visibleSvg.svg" #settingsImg [class]="columnHiding ? 'activity' : ''" />
+      </div>
+      <!--      <div style="width: 32px; height: 32px; background: red"-->
+      <!--           wbSelect-->
+      <!--           [multiple]="true"-->
+      <!--           groupableKeys="childs"-->
+      <!--           (open)="getHiddenColumns($event)"-->
+      <!--           (valuesChange)="hideColumns($event)"-->
+      <!--           optionsFormat="multi-language"-->
+      <!--           optionKey="field"-->
+      <!--           optionLabel="name"-->
+      <!--           [options]="config.filtersFields">-->
+      <!--      </div>-->
+    </ng-container>
+    <!--  Настрйока шаблонов -->
+    <app-template-menu
+      [config]="config"
+      [state]="state"
+      [currentTemplateNumber]="currentTemplateNumber"
+      (changeCurrentTemplate)="changeTemplate($event)"
+      (changeTemplateArray)="changeTemplateArray($event)"
+      (updateTemplate)="updateTemplate()"
+    ></app-template-menu>
+
+    <div class="chooserHeight">
+      <!--          Низкая разрядка-->
+      <div
+        (click)="selectDensity(0)"
+        [class]="activDensity == 0 ? 'activity' : ''"
+        [attr.tooltipCss]="'LOW_DISCHARGE' | wbTranslate"
+        flow="left"
+      >
+        <img src="/assets/imgs/icons/tightly0.svg" />
+      </div>
+
+      <!--          Средняя разрядка-->
+      <div
+        (click)="selectDensity(1)"
+        [class]="activDensity == 1 ? 'activity' : ''"
+        [attr.tooltipCss]="'MEDIUM_DISCHARGE' | wbTranslate"
+        flow="left"
+      >
+        <img src="/assets/imgs/icons/tightly1.svg" />
+      </div>
+
+      <!--          Высокая разрядка-->
+      <div
+        (click)="selectDensity(2)"
+        [class]="activDensity == 2 ? 'activity' : ''"
+        [attr.tooltipCss]="'HIGH_DISCHARGE' | wbTranslate"
+        flow="left"
+      >
+        <img src="/assets/imgs/icons/tightly2.svg" />
+      </div>
+    </div>
+    <!-- Компонент для выбора скрытых свойств -->
+    <ng-template #hidingColumns></ng-template>
+    <!-- Компонент для расширенной фильтрации -->
+    <ng-template #advancedFilter></ng-template>
+  </div>
+</div>
+
+<!-- Окно загрузки данных -->
+<ng-template #loading>
+  <div class="loadingBlock">
+    <!--      Нет данных-->
+    {{ 'NO_DATA' | wbTranslate }}
+  </div>
+</ng-template>
+
+<igx-grid
+  #grid
+  #gridRowEdit
+  igxState
+  [clipboardOptions]="config.gridConfig.clipboardOptions || clipboardOptions"
+  [groupingExpressions]="config.gridConfig.groupingExpressions"
+  [stater]="config.gridConfig.stater"
+  [gridId]="config.gridConfig.gridId"
+  [table]="table"
+  [paginatorInfo]="paginatorForm"
+  [checkSum]="checkSum"
+  [emptyGridTemplate]="loading"
+  [columnHiding]="config.gridConfig.columnHiding"
+  [cellSelection]="config.gridConfig.cellSelection"
+  [rowSelection]="config.gridConfig.rowSelection"
+  [data]="data"
+  [allowFiltering]="config.gridConfig.allowFiltering"
+  [filterMode]="config.gridConfig.filterMode"
+  [displayDensity]="config.gridConfig.displayDensity"
+  [primaryKey]="config.gridConfig.primaryKey"
+  [rowEditable]="config.gridConfig.rowEditable"
+  [height]="config.gridConfig.height"
+  [width]="config.gridConfig.width"
+  [showToolbar]="config.gridConfig.showToolbar"
+  [toolbarTitle]="config.gridConfig.toolbarTitle"
+  [columnHidingTitle]="config.gridConfig.columnHidingTitle"
+  [hiddenColumnsText]="config.gridConfig.hiddenColumnsText"
+  (onRowSelectionChange)="checkSelection($event)"
+  (onFilteringDone)="changeCfg()"
+  (onRowEdit)="handleRowEdit($event)"
+  (onCellEdit)="handleCellEdit($event)"
+  (onSortingDone)="sortingDone($event)"
+  (onRangeSelection)="onRangeSelection($event)"
+  (onSelection)="onSelectionOwn($event)"
+  (onColumnInit)="initColumns($event)"
+  (onColumnPinning)="columnPinning($event)"
+>
+  <igx-column
+    #indexColumn
+    *ngIf="config.gridConfig.indexTable"
+    [header]="'P_P' | wbTranslate"
+    [filterable]="false"
+    [resizable]="true"
+    [editable]="false"
+    [groupable]="!!config.gridConfig.groupingExpressions?.length"
+    [width]="'65px'"
+    [field]="'uniqueIndex'"
+    [pinned]="true"
+    [cellClasses]="rowClasses"
+  >
+    <ng-template igxCell let-cell="cell">
+      <ng-container
+        [ngTemplateOutlet]="indexTemplate ? indexTemplate : DefaultIndexTemplate"
+        [ngTemplateOutletContext]="{
+          $implicit: cell.row._rowData,
+          index: cell.rowIndex,
+          rowNumber: cell.row.index + 1 + table.tableConfig.paginatorCfg.start
+        }"
+      ></ng-container>
+    </ng-template>
+
+    <ng-template #DefaultIndexTemplate let-row let-rowNumber="rowNumber">
+      {{ rowNumber }}
+    </ng-template>
+  </igx-column>
+
+  <!--TODO Не работает с рекурсий. Подумать как еще можно реализовать этот варик-->
+  <!--        <app-group-columns [columns]="columns"></app-group-columns>-->
+  <!--  [sortable]="sortable"-->
+  <!--  выводятся столбцы, которые пишутся в config и передаются в app-table-adapter-->
+  <ng-container *ngFor="let col of columns">
+    <igx-column
+      #column
+      *ngIf="!col.childs.length; else groupColumns"
+      [movable]="col.movable"
+      [resizable]="col.resizable"
+      [field]="col.field"
+      [editable]="col.editable"
+      [dataType]="col.dataType"
+      [header]="col.name"
+      [formatter]="col.formatter"
+      [pinned]="col.pinned"
+      [hidden]="col.hidden"
+      [width]="col.width"
+      [filterable]="col.filterable"
+      [rowStart]="col.rowStart"
+      [rowEnd]="col.rowEnd"
+      [colStart]="col.colStart"
+      [colEnd]="col.colEnd"
+      [groupable]="col.groupable"
+      [cellClasses]="rowClasses"
+    >
+      <!-- фильтры под названием столбца -->
+      <ng-template igxHeader>
+        {{ !config.gridConfig.multiLanguage ? col.name : (col.name | wbTranslate) }} <br />
+        <div class="boxSvg">
+          <!-- Перевести в действующие -->
+          <igx-icon
+            class="pin-icon"
+            *ngIf="config.gridConfig.columnsPinned"
+            [attr.draggable]="false"
+            fontSet="material"
+            (click)="$event.stopPropagation()"
+            (mouseup)="toggleColumn(column)"
+            >attach_file
+          </igx-icon>
+          <!-- Фильтрация по значению -->
+          <igx-icon
+            class="filter-icon"
+            *ngIf="col.filterable"
+            [color]="table.checkFilterOfActive(col.field) ? '#007ad9' : ''"
+            wbSelect
+            [optionsPipeMap]="col.getDropdownList"
+            [options]="getDataForWindow"
+            (open)="table.getFilteringValuesByField(col.field, $event)"
+            (initializeParams)="$event.setParams({ columns: col.field })"
+            (valuesChange)="startTableFilter($event, col)"
+            [attr.draggable]="false"
+            [multiple]="true"
+            [customFilter]="col.customFilterStrategy"
+            [dynamicLoad]="col.infinityScroll"
+            [optionsFormat]="col.dataType"
+            fontSet="material"
+            >filter_list
+          </igx-icon>
+
+          <div class="header-feature" *ngIf="headerFeature && checkColumnForHeaderFeature(col.field)">
+            <ng-container [ngTemplateOutlet]="headerTemplateBuffer"></ng-container>
+          </div>
+
+          <!-- Сортировка по возрастанию/убыванию -->
+          <igx-icon
+            class="sort-icon"
+            *ngIf="true"
+            [style.opacity]="table.checkSortingOfActive(col.field) ? '1' : ''"
+            [color]="table.checkSortingOfActive(col.field) ? '#007ad9' : ''"
+            [style.transform]="
+              table.checkSortingOfActive(col.field) && table.typeSorting === 'DESC' ? 'rotate(180deg)' : ''
+            "
+            (click)="sort(col)"
+            [attr.draggable]="false"
+            fontSet="material"
+            >arrow_upward
+          </igx-icon>
+        </div>
+      </ng-template>
+
+      <!-- Шаблон/текст ячеек -->
+      <ng-template igxCell let-val let-cell="cell">
+        <ng-container
+          *ngIf="getTemplateForColumn(col.field); else defaultCell"
+          [ngTemplateOutlet]="templateBuffer"
+          [ngTemplateOutletContext]="{ $implicit: cell.row._rowData, index: cell.rowIndex, field: col.field }"
+        ></ng-container>
+        <ng-template #defaultCell>
+          <div
+            igxTextHighlight
+            style="pointer-events: none"
+            [cssClass]="cell.highlightClass"
+            [activeCssClass]="cell.activeHighlightClass"
+            [groupName]="cell.gridID"
+            [value]="
+              cell.formatter
+                ? cell.formatter(val)
+                : col.dataType === 'number'
+                ? (val | igxdecimal: grid.locale)
+                : col.dataType === 'date'
+                ? (val | igxdate: cell.grid.locale)
+                : val
+            "
+            [row]="cell.row"
+            [column]="cell.column.field"
+            [containerClass]="'igx-grid__td-text'"
+            class="igx-grid__td-text"
+          >
+            {{
+              cell.formatter
+                ? cell.formatter(val)
+                : col.dataType === 'number'
+                ? (val | igxdecimal: cell.grid.locale)
+                : col.dataType === 'date'
+                ? (val | igxdate: cell.grid.locale)
+                : val
+            }}
+          </div>
+        </ng-template>
+      </ng-template>
+      <!-- Шаблон редактора ячеек -->
+      <ng-template igxCellEditor let-val let-cell="cell">
+        <ng-container
+          *ngIf="!!cellEditor && getCellEditorTemplate(col.field); else defaultCellEditor"
+          [ngTemplateOutlet]="cellEditorTemplateBuffer"
+          [ngTemplateOutletContext]="{ $implicit: cell.row._rowData }"
+        ></ng-container>
+        <ng-template #defaultCellEditor>
+          <div class="editor-template" wbCellEditorType [cell]="cell" [type]="col.dataType"></div>
+        </ng-template>
+      </ng-template>
+    </igx-column>
+
+    <ng-template #groupColumns>
+      <igx-column-group [pinned]="col.pinned" [header]="col.name" [width]="col.width">
+        <ng-template igxHeader>
+          {{ !config.gridConfig.multiLanguage ? col.name : (col.name | wbTranslate) }}
+        </ng-template>
+        <igx-column
+          #childColumn
+          *ngFor="let child of col.childs"
+          [sortable]="child.sortable"
+          [resizable]="child.resizable"
+          [field]="child.field"
+          [editable]="child.editable"
+          [dataType]="child.dataType"
+          [header]="child.name"
+          [width]="child.width"
+          [formatter]="child.formatter"
+          [movable]="child.movable"
+          [pinned]="child.pinned"
+          [hidden]="child.hidden"
+          [groupable]="col.groupable"
+          [filterable]="child.filterable"
+          [cellClasses]="rowClasses"
+        >
+          <ng-template igxHeader let-column="column">
+            <span
+              #el
+              *ngIf="config.gridConfig.isShowTooltip; else anotherHeader"
+              [showDelay]="50"
+              [igxTooltipTarget]="tooltip1"
+              [tooltipDisabled]="el.parentElement.scrollWidth <= el.parentElement.clientWidth"
+              (onTooltipShow)="tooltip1.context = column"
+            >
+              {{ !config.gridConfig.multiLanguage ? column.header : (column.header | wbTranslate) }}
+            </span>
+            <ng-template #anotherHeader>
+              <span [style.color]="table.checkFilterOfActive(child.field) ? '#007ad9' : ''">
+                {{ !config.gridConfig.multiLanguage ? child.name : (child.name | wbTranslate) }}</span
+              >
+            </ng-template>
+            <br />
+            <div class="boxSvg">
+              <igx-icon
+                class="pin-icon"
+                *ngIf="config.gridConfig.columnsPinned"
+                [attr.draggable]="false"
+                fontSet="material"
+                (mouseup)="toggleColumn(childColumn)"
+                (click)="$event.stopPropagation()"
+                >attach_file
+              </igx-icon>
+
+              <igx-icon
+                class="filter-icon"
+                *ngIf="child.filterable"
+                [color]="table.checkFilterOfActive(child.field) ? '#007ad9' : ''"
+                wbSelect
+                [options]="getDataForWindow"
+                [optionsPipeMap]="child['getDropdownList']"
+                (open)="table.getFilteringValuesByField(child.field, $event)"
+                (initializeParams)="$event.setParams({ columns: child.field })"
+                (valuesChange)="startTableFilter($event, child)"
+                [attr.draggable]="false"
+                [multiple]="true"
+                [customFilter]="child.customFilterStrategy"
+                [dynamicLoad]="child.infinityScroll"
+                [optionsFormat]="child.dataType"
+                fontSet="material"
+                >filter_list
+              </igx-icon>
+
+              <!--                          [optionsPipeMap]="getCheckValues"-->
+
+              <igx-icon
+                class="sort-icon"
+                *ngIf="child.sortable"
+                [style.opacity]="table.checkSortingOfActive(child.field) ? '1' : ''"
+                [color]="table.checkSortingOfActive(child.field) ? '#007ad9' : ''"
+                [style.transform]="
+                  table.checkSortingOfActive(child.field) && table.typeSorting === 'DESC' ? 'rotate(180deg)' : ''
+                "
+                [attr.draggable]="false"
+                fontSet="material"
+                >arrow_upward
+              </igx-icon>
+              <div class="header-feature" *ngIf="headerFeature && checkColumnForHeaderFeature(child.field)">
+                <ng-container [ngTemplateOutlet]="headerFeature"></ng-container>
+              </div>
+            </div>
+          </ng-template>
+          <div class="features-wrapper">
+            <ng-template igxCell let-val let-cell="cell">
+              <ng-container
+                *ngIf="getTemplateForColumn(child.field); else defaultCell"
+                [ngTemplateOutlet]="templateBuffer"
+                [ngTemplateOutletContext]="{
+                  $implicit: cell.row._rowData,
+                  index: cell.rowIndex,
+                  field: child.field
+                }"
+              ></ng-container>
+              <ng-template #defaultCell>
+                <div
+                  igxTextHighlight
+                  style="pointer-events: none"
+                  [cssClass]="cell.highlightClass"
+                  [activeCssClass]="cell.activeHighlightClass"
+                  [groupName]="cell.gridID"
+                  [value]="
+                    cell.formatter
+                      ? cell.formatter(val)
+                      : child.dataType === 'number'
+                      ? (val | igxdecimal: grid.locale)
+                      : child.dataType === 'date'
+                      ? (val | igxdate: cell.grid.locale)
+                      : val
+                  "
+                  [row]="cell.row"
+                  [column]="cell.column.field"
+                  [containerClass]="'igx-grid__td-text'"
+                  class="igx-grid__td-text"
+                >
+                  {{
+                    cell.formatter
+                      ? cell.formatter(val)
+                      : child.dataType === 'number'
+                      ? (val | igxdecimal: cell.grid.locale)
+                      : child.dataType === 'date'
+                      ? (val | igxdate: cell.grid.locale)
+                      : val
+                  }}
+                </div>
+              </ng-template>
+            </ng-template>
+          </div>
+          <ng-template igxCellEditor let-val let-cell="cell">
+            <ng-container
+              *ngIf="!!cellEditor && getCellEditorTemplate(child.field); else defaultCellEditorChild"
+              [ngTemplateOutlet]="cellEditorTemplateBuffer"
+              [ngTemplateOutletContext]="{ $implicit: cell.row._rowData }"
+            ></ng-container>
+            <ng-template #defaultCellEditorChild>
+              <div class="editor-template" wbCellEditorType [cell]="cell" [type]="child.dataType"></div>
+            </ng-template>
+          </ng-template>
+        </igx-column>
+      </igx-column-group>
+    </ng-template>
+  </ng-container>
+
+  <!-- Шаблон в столбце Действия -->
+  <igx-column
+    *ngIf="config.gridConfig.actionColumn"
+    [header]="'ACTIONS' | wbTranslate"
+    [field]="'tableActions'"
+    [width]="config.gridConfig.actionColumnWidth"
+    [resizable]="true"
+    [pinned]="true"
+    [cellClasses]="rowClasses"
+  >
+    <ng-template igxCell let-cell="cell">
+      <ng-container
+        [ngTemplateOutlet]="actionsTemplate"
+        [ngTemplateOutletContext]="{ $implicit: cell.row._rowData, index: cell.rowIndex }"
+      ></ng-container>
+    </ng-template>
+  </igx-column>
+
+  <ng-template igxRowEditText let-rowChangesCount>
+    <span class="changes"> {{ 'CHANGESS' | wbTranslate }}: {{ rowChangesCount }}</span>
+  </ng-template>
+  <ng-template igxRowEditActions let-endRowEdit>
+    <div class="custom-buttons">
+      <button igxButton="icon" class="custom-button" igxRowEditTabStop (click)="endRowEdit(false)">
+        <igx-icon>clear</igx-icon>
+      </button>
+      <button igxButton="icon" class="custom-button" igxRowEditTabStop (click)="endRowEdit(true)">
+        <igx-icon>check</igx-icon>
+      </button>
+    </div>
+  </ng-template>
+  <!-- Селектор в шапке -->
+  <ng-template igxHeadSelector let-context>
+    <div class="header-selector">
+      <igx-checkbox
+        [checked]="allSelected(context.selectedCount, allSelectable)"
+        (click)="handleClick($event, context)"
+        [indeterminate]="context.selectedCount !== 0 && !allSelected(context.selectedCount, allSelectable)"
+      ></igx-checkbox>
+    </div>
+  </ng-template>
+  <!-- Селекторы в каждой строке -->
+  <ng-template igxRowSelector let-rowContext>
+    <div class="row-selector">
+      <igx-checkbox
+        class="row-selector-checkbox"
+        [checked]="rowContext.selected"
+        [readonly]="true"
+        [disableTransitions]="grid.disableTransitions"
+      >
+      </igx-checkbox>
+    </div>
+  </ng-template>
+  <ng-template igxGroupByRow let-groupRow>
+    <div class="group-header" *ngIf="groupHeaderTemplate && config.gridConfig.groupHeaderMode; else groupHeaderDefault">
+      <ng-container
+        [ngTemplateOutlet]="groupHeaderTemplate.templateRef"
+        [ngTemplateOutletContext]="{ $implicit: groupRow }"
+      >
+      </ng-container>
+      <igx-badge [value]="groupRow.records.length" class="igx-group-label__count-badge"></igx-badge>
+    </div>
+    <ng-template #groupHeaderDefault>
+      <div class="group-header-cell">
+        <div class="igx-group-label">
+          <span class="igx-group-label__column-name">
+            {{
+              !config.gridConfig.multiLanguage
+                ? getNameGroup(groupRow.expression.fieldName)
+                : (getNameGroup(groupRow.expression.fieldName) | wbTranslate)
+            }}:
+          </span>
+          <span class="igx-group-label__text">{{ groupRow.value }}</span>
+          <igx-badge [value]="groupRow.records.length" class="igx-group-label__count-badge"></igx-badge>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+</igx-grid>
+
+<div #tooltip1="tooltip" igxTooltip>{{ tooltip1.context?.header }}</div>
+<div class="paginatorCenter">
+  <app-paging
+    #pagingComponent
+    *ngIf="table.tableConfig.paginator"
+    [paginatorConfig]="table.tableConfig.paginatorCfg"
+    [currentCount]="dataLength"
+    [totalCount]="table.tableConfig.paginatorCfg.totalCount"
+    [paginatorTemplate]="infoPaginatorTemplate"
+    (changePage)="paginatorChange($event)"
+    (paginatorInfo)="handlePaginatorForm($event)"
+    [paginatorForm]="paginatorForm"
+  ></app-paging>
+</div>
+<igx-toast [message]="'LOADING_DATA' | wbTranslate" #toast></igx-toast>

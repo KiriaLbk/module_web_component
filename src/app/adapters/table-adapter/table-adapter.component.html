@@ -1,0 +1,17 @@
+<app-table-wrapper
+  #wrapper
+  [data]="data"
+  [config]="config"
+  [arrColForFeatures]="features ? features : []"
+  [actionsTemplate]="actions ? actions.templateRef : null"
+  [indexTemplate]="indexTemplate ? indexTemplate.templateRef : null"
+  [infoPaginatorTemplate]="infoPaginator ? infoPaginator.templateRef : null"
+  [controls]="controls ? controls.templateRef : null"
+  [headerFeature]="headerFeature ? headerFeature : []"
+  [cellEditor]="cellEditor ? cellEditor : []"
+  [groupHeaderTemplate]="groupHeader ? groupHeader : null"
+  (changeCfgEmit)="refresh($event)"
+  (editRowEmit)="editRow($event)"
+  (editCellEmit)="editCell($event)"
+  (onSelectionEmit)="onSelectionChange($event)"
+></app-table-wrapper>

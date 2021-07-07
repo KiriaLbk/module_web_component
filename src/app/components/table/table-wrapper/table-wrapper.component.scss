@@ -1,0 +1,866 @@
+@import '~_variables.scss';
+@import '~scss/tooltip';
+@import '~scss/igx-grid';
+
+:host ::ng-deep {
+  .header-icon {
+    font-size: 1.1em;
+    width: 1.1em;
+    height: 1.1em;
+    float: right;
+    cursor: pointer;
+  }
+
+  .header {
+    height: 100%;
+  }
+
+  .group-header {
+    display: flex;
+  }
+
+  .title {
+    width: 100%;
+  }
+
+  .blueIcon {
+    color: rgb(0, 122, 217);
+  }
+
+  .igx-group-label {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    max-height: 80px;
+    width: auto;
+  }
+
+  .group-header-cell {
+    text-align: center;
+    margin: 0;
+    max-width: 136px;
+    padding: 0 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: $font-regular;
+  }
+
+  .igx-group-label__column-name {
+    color: #363636;
+  }
+
+  .igx-grid__grouparea {
+    display: none !important;
+  }
+
+  .igx-grid--compact .igx-grid__group-content,
+  .igx-grid--compact,
+  .igx-grid__group-content {
+    padding-left: 0 !important;
+  }
+}
+
+.title-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grid__wrapper {
+  margin: 0 auto;
+  padding: 5px;
+}
+
+app-paging {
+  position: fixed;
+  bottom: 25px;
+}
+
+.density-chooser {
+  width: 100%;
+  height: 2px;
+  position: relative;
+}
+
+/////////////////////////////   стили кнопок формата таблицы
+.commonBlock {
+  position: absolute;
+  right: 0;
+  top: -40px;
+  z-index: 198;
+  display: flex;
+  user-select: none;
+  justify-content: flex-end;
+
+  & > div {
+    margin-left: 10px;
+    padding: 0;
+  }
+
+  .chooserHeight {
+    cursor: pointer;
+    width: 84px;
+    height: 32px;
+    background: white;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    div {
+      height: 32px;
+      width: 100%;
+      display: flex;
+      padding: 0;
+      opacity: 0.5;
+      transition: 0.3s;
+
+      img {
+        margin: auto;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .activity,
+  .deleteFilters > .activity {
+    opacity: 0.8;
+  }
+
+  .visible,
+  .deleteFilters,
+  .chooserSelect {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .visible img,
+  .deleteFilters img {
+    opacity: 0.5;
+    transition: 0.3s;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+
+  .chooserSelect {
+    mat-select {
+      width: 32px;
+      height: 32px;
+    }
+
+    mat-icon {
+      color: black;
+      opacity: 0.4;
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      font-size: 20px;
+      transition: 0.4s;
+      z-index: -1;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+:host ::ng-deep {
+  .templatesTable {
+    .mat-select-arrow {
+      opacity: 0;
+    }
+
+    .mat-select-value {
+      display: none;
+    }
+
+    .mat-select-arrow-wrapper {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .igx-button--flat {
+    color: #1851a0;
+  }
+
+  .igx-grid-toolbar--cosy,
+  .igx-grid-toolbar--compact,
+  .igx-grid-toolbar,
+  .igx-grid__th-icons {
+    display: none;
+  }
+
+  ///////////////////////////////  стили блока скрываемых столбцов
+  .columnHidingContainer {
+    position: absolute;
+    top: 5px;
+    z-index: 24;
+    right: 95px;
+    min-width: 250px;
+    height: 560px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 1px gray;
+    border-radius: 10px;
+    box-shadow: 1px 1px 2px 2px rgba(50, 50, 50, 0.25);
+
+    igx-column-hiding {
+      height: 460px;
+    }
+
+    .igx-checkbox {
+      width: 222px !important;
+      justify-content: end !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .igx-column-hiding__columns-item {
+      min-height: 2rem;
+      padding: 0 1rem;
+    }
+
+    .igx-checkbox__ripple {
+      height: 28px;
+      width: 28px;
+      top: calc(50% - 1em);
+      left: -7px;
+    }
+  }
+
+  //////////////////////////////////   стили заголовка таблицы
+  .igx-grid__thead-wrapper {
+    background: white;
+    min-width: 100%;
+
+    .igx-grid__thead-item {
+      .igx-grid__th {
+        background: white;
+        text-align: center;
+        padding: 0 15px;
+        min-height: 68px;
+        max-height: 100px;
+        height: 44px !important;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .igx-grid__thead-title {
+        background: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+      }
+
+      .boxSvg {
+        min-width: 77px;
+        width: max-content;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+
+        .header-feature {
+          display: flex;
+        }
+      }
+
+      .igx-grid__th:hover .pin-icon,
+      .igx-grid__th:hover .sort-icon {
+        opacity: 1;
+      }
+    }
+
+    .pin-icon,
+    .filter-icon,
+    .sort-icon {
+      cursor: pointer;
+      font-size: 18px;
+      color: #999;
+      height: 18px;
+
+      &:hover {
+        color: #444;
+      }
+    }
+
+    .pin-icon,
+    .sort-icon {
+      opacity: 0;
+      transition: 0.3s;
+    }
+
+    @mixin activeIcon() {
+      color: #007ad9;
+      height: 18px;
+      opacity: 1;
+    }
+
+    .igx-grid__th--pinned {
+      .pin-icon {
+        @include activeIcon();
+      }
+    }
+
+    .igx-grid__th--sorted {
+      .sort-icon {
+        @include activeIcon();
+      }
+    }
+
+    .igx-checkbox--indeterminate .igx-checkbox__composite {
+      border-color: #1851a0;
+
+      &::after {
+        background: #1851a0;
+      }
+    }
+  }
+
+  .igx-checkbox__composite {
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+  }
+
+  .igx-grid .igx-checkbox {
+    // min-width: 40px;
+  }
+
+  .igx-checkbox {
+    width: 46px !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .igx-checkbox--checked .igx-checkbox__composite {
+    border-color: #1851a0;
+
+    &::after {
+      background: #1851a0;
+    }
+  }
+
+  .igx-checkbox__composite-wrapper {
+    width: 12px;
+    height: 14px;
+  }
+
+  @mixin th-title() {
+    line-height: 1.5;
+    font-family: Roboto-Bold;
+  }
+
+  .igx-grid__th-title {
+    @include th-title();
+  }
+
+  .igx-grid--cosy .igx-grid__th-title {
+    @include th-title();
+  }
+
+  .igx-grid--compact .igx-grid__th-title {
+    @include th-title();
+  }
+
+  //////////////////////////// стили передвигаемого блока колонки
+  .igx-grid__drag-ghost-image {
+    height: 68px !important;
+    min-height: 68px !important;
+    background: rgba(255, 255, 255, 0.7);
+
+    .igx-grid__drag-ghost-image-icon {
+      display: none;
+    }
+
+    .igx-grid__th-title {
+      text-align: center;
+    }
+
+    .sort-icon {
+      opacity: 0 !important;
+    }
+  }
+
+  .igx-grid__th-drop-indicator-left.igx-grid__th-drop-indicator--active,
+  .igx-grid__th-drop-indicator-right.igx-grid__th-drop-indicator--active {
+    border-right: 2px solid #00c0ff;
+  }
+
+  .igx-grid__th-drop-indicator-left.igx-grid__th-drop-indicator--active::before,
+  .igx-grid__th-drop-indicator-right.igx-grid__th-drop-indicator--active::before {
+    border-color: transparent transparent #00c0ff;
+  }
+
+  .igx-grid__th-drop-indicator-left.igx-grid__th-drop-indicator--active::after,
+  .igx-grid__th-drop-indicator-right.igx-grid__th-drop-indicator--active::after {
+    border-color: #00c0ff transparent transparent;
+  }
+
+  /////////////////////// стили редактирования ячеек
+
+  .igx-grid__td--editing {
+    box-shadow: inset 0 0 0 1px #bcbcbc;
+
+    .igx-input-group {
+      width: 88%;
+    }
+
+    .igx-input-group__input {
+      text-align: center;
+    }
+
+    .igx-input-group__bundle:hover {
+      box-shadow: inset 0 -2px 0 0 rgba(55, 139, 255, 0.98);
+    }
+  }
+
+  .igx-banner__border-bottom,
+  .igx-banner__border-top {
+    border-bottom: none;
+    width: 260px;
+    height: 44px;
+    padding: 0 10px 0 20px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.85);
+    position: absolute;
+    left: calc(50% - 130px);
+    box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  .igx-banner__border-bottom {
+    border-radius: 0 0 20px 20px;
+  }
+
+  .igx-banner__border-top {
+    border-radius: 20px 20px 0 0;
+    top: -45px;
+  }
+
+  .igx-banner__message {
+    margin-right: 0;
+    min-width: auto;
+    width: 129px;
+
+    .igx-banner__text {
+      color: #3698e1;
+      margin-left: 0;
+      font-family: Roboto-Bold;
+    }
+  }
+
+  .igx-banner__actions {
+    min-height: 0;
+    align-self: center;
+  }
+
+  .custom-buttons {
+    width: 80px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    button {
+      opacity: 0.5;
+    }
+
+    button:hover {
+      opacity: 1;
+      background: transparent !important;
+    }
+  }
+
+  ::ng-deep {
+    .igx-grid__tr.igx-grid__tr--edit:after {
+      background: white;
+    }
+  }
+
+  .igx-grid__tr.igx-grid__tr--edit {
+    border-bottom: none;
+    height: 66px;
+    transition: 0.8s;
+    z-index: 10001;
+    background: white;
+    box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.2);
+
+    .igx-grid__cbx-selection {
+      border-right: none;
+    }
+
+    .igx-grid__td {
+      border-right: 0px solid rgba(0, 0, 0, 0.26) !important;
+    }
+
+    .igx-grid__td--editing {
+      height: 44px;
+      margin-top: 11px;
+      border-radius: 50px;
+    }
+
+    &:hover {
+      background: white !important;
+    }
+  }
+
+  .igx-grid__tbody {
+    min-height: 0px;
+
+    .igx-grid__tbody-content {
+      min-width: 100%;
+      height: 100% !important;
+
+      //////////////////////////// стили на строки
+      .igx-grid__tr {
+        border: none;
+
+        &:hover {
+          background-color: #dbe1ea;
+        }
+
+        .igx-grid__cbx-selection {
+          padding: 0 !important;
+        }
+
+        .igx-grid__td {
+          text-align: center;
+          justify-content: center;
+
+          .igx-grid__td-text {
+            width: 100%;
+          }
+        }
+      }
+
+      .igx-grid__tr--odd {
+        background: #f4f3f2;
+
+        .igx-grid__td--pinned.igx-grid__td--selected {
+          background: rgb(200, 221, 237) !important;
+        }
+        .igx-grid__td--pinned {
+          .error_row {
+            background: rgb(246, 196, 195) !important;
+          }
+
+          .error_row.igx-grid__td--selected,
+          .igx-grid__td--selected {
+            background: rgb(200, 221, 237) !important;
+          }
+        }
+
+        &:hover {
+          .igx-grid__td--pinned {
+            .error_row {
+              background: rgb(227, 182, 189) !important;
+            }
+
+            .error_row.igx-grid__td--selected,
+            .igx-grid__td--selected {
+              background: rgb(180, 206, 231) !important;
+            }
+          }
+        }
+      }
+
+      .igx-grid__tr--even {
+        .igx-grid__td--pinned.igx-grid__td--selected {
+          background: rgb(200, 221, 237) !important;
+        }
+        .igx-grid__td--pinned {
+          .error_row {
+            background: rgb(255, 205, 205) !important;
+          }
+
+          .error_row.igx-grid__td--selected,
+          .igx-grid__td--selected {
+            background: rgb(209, 231, 248) !important;
+          }
+        }
+
+        &:hover {
+          .igx-grid__td--pinned {
+            .error_row {
+              background: rgb(227, 182, 189) !important;
+            }
+
+            .error_row.igx-grid__td--selected,
+            .igx-grid__td--selected {
+              background: rgb(180, 206, 231) !important;
+            }
+          }
+        }
+      }
+
+      .igx-grid__tr.igx-grid__tr--odd.igx-grid__tr--selected {
+        background: #d3ebf9 !important;
+      }
+
+      .igx-grid__tr.igx-grid__tr--even.igx-grid__tr--selected {
+        background: #cbe1ef !important;
+      }
+
+      .igx-grid__tr.igx-grid__tr--even.igx-grid__tr--selected:hover,
+      .igx-grid__tr.igx-grid__tr--odd.igx-grid__tr--selected:hover {
+        background-color: #93b9d0 !important;
+      }
+
+      .igx-grid__td--selected {
+        background: rgb(211, 235, 249) !important;
+      }
+
+      .igx-grid__td--active {
+        box-shadow: none;
+        background: white !important;
+        border: 2px solid #259be1;
+      }
+
+      .igx-checkbox--focused .igx-checkbox__ripple {
+        display: none;
+      }
+
+      .igx-grid__td--pinned.igx-grid__td--selected {
+        border: 0 !important;
+        background: none !important;
+      }
+
+      .igx-grid__td.igx-grid__td--fw.igx-grid__td--pinned.igx-grid__td--pinned-last.igx-grid__td--selected {
+        border-right: 2px solid rgba(0, 0, 0, 0.26) !important;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px !important;
+      height: 0px;
+    }
+    ::-webkit-scrollbar-button {
+      background-color: #ede5e3;
+      height: 0;
+      width: 0;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: #9990;
+    }
+
+    ::-webkit-scrollbar-track-piece {
+    }
+
+    ::-webkit-scrollbar-thumb {
+      height: 50px;
+      width: 8px;
+      background-color: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-corner {
+      display: none;
+    }
+
+    ::-webkit-resizer {
+      background-color: #666;
+    }
+  }
+
+  .igx-vhelper--vertical {
+    transition: 0.2s;
+    width: 10px;
+    //&:hover {
+    //  width: 12px;
+    //}
+  }
+
+  .igx-grid__scroll {
+    height: 10px !important;
+    transition: 0.1s;
+    position: fixed;
+    bottom: 5px;
+    background: none;
+    //&:hover {
+    //  height: 14px !important;
+    //}
+    .igx-grid__scroll-start {
+      background: none;
+    }
+
+    // ГОРИЗОНТАЛЬ СКРОЛЛ
+
+    ::-webkit-scrollbar {
+      width: 0px;
+      height: 10px !important;
+      transition: 0.4s;
+    }
+    ::-webkit-scrollbar-button {
+      background-color: #ede5e3;
+      height: 0;
+      width: 0;
+    }
+
+    ::-webkit-scrollbar-track {
+    }
+
+    ::-webkit-scrollbar-track-piece {
+    }
+
+    ::-webkit-scrollbar-thumb {
+      height: 8px;
+      width: 50px;
+      background-color: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-corner {
+      display: none;
+    }
+    ::-webkit-resizer {
+    }
+
+    ::-webkit-scrollbar-thumb {
+      height: 8px;
+      width: 50px;
+      background-color: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-corner {
+      display: none;
+    }
+
+    ::-webkit-resizer {
+    }
+
+    ::-webkit-scrollbar:hover {
+      height: 14px;
+    }
+  }
+
+  .igx-vhelper--horizontal .igx-vhelper__placeholder-content {
+    height: 14px;
+  }
+
+  .igx-toast--middle {
+    transform: none;
+    left: 0;
+    right: 0;
+    width: 176px;
+  }
+
+  /* .igx-grid__th--pinned  {
+   .pin-icon {
+     color: #444;
+     &:hover {
+       color: #999
+     }
+   }
+ }*/
+}
+
+::ng-deep {
+  .content-container {
+    min-height: calc(100% - 57px) !important;
+  }
+  .igx-drop-down__item--selected {
+    background: rgba(0, 0, 0, 0.12) !important;
+  }
+  .igx-tooltip--desktop {
+    font-size: 11px;
+    line-height: 13px;
+    max-width: 157px;
+    padding: 10px;
+  }
+  .content {
+    max-height: initial !important;
+  }
+  .error_row {
+    background: rgb(255, 205, 205) !important;
+  }
+  .warning_row {
+    background: #eddd9f !important;
+  }
+
+  .error_border {
+    border-top: solid 1px red !important;
+    border-bottom: solid 1px red !important;
+  }
+
+  //.igx-grid__td.igx-grid__td--fw {
+  //  max-width: 500px !important;
+  //}
+  //.igx-grid__td--fw {
+  //  max-width: 500px !important;
+  //}
+}
+
+.igx-grid__td--pinned {
+  z-index: 9998;
+}
+
+.visibleImg {
+  cursor: pointer;
+  fill: rgb(54, 54, 54);
+  height: 16px;
+  width: 20px;
+  transition: 0.3s;
+  &:hover {
+    opacity: 1;
+    fill: rgb(0, 122, 217);
+  }
+}
+
+.loadingBlock {
+  height: 100%;
+  width: 100%;
+  font-family: Roboto-Bold;
+  color: lightgrey;
+  font-size: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginatorCenter {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.filters-count {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  font-size: 8px;
+  background: red;
+  color: white;
+}

@@ -1,0 +1,170 @@
+@import '~scss/tooltip';
+.dialog_container {
+  font-family: 'Roboto Regular', Arial;
+  background: rgba(255, 255, 255, 0.9);
+  min-width: 470px;
+  z-index: 5;
+  width: 500px;
+  min-height: 160px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+  transform: translateX(520px);
+  transition: 0.8s;
+  border-radius: 10px;
+  position: fixed;
+  //top: 210px;
+  right: 15px;
+
+  .header {
+    height: 30px;
+
+    .basket,
+    .closeContainer {
+      position: absolute;
+      top: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.5;
+      transition: 0.4s;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    .basket {
+      left: 10px;
+    }
+    .closeContainer {
+      right: 10px;
+    }
+    .text {
+      color: #363636;
+      font-size: 16px;
+      font-family: Roboto-Bold;
+      width: fit-content;
+      margin: 17px auto 0;
+    }
+  }
+
+  .filter_content {
+    --wb-container-height: 40px;
+    width: 450px;
+    margin-left: 30px;
+    max-height: 300px;
+    overflow: overlay;
+    padding-top: 4px;
+
+    .filterRow {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .select {
+      width: 200px;
+      height: 42px;
+      margin-right: 20px;
+    }
+    .value {
+    }
+    .button_remove {
+    }
+  }
+
+  .button_remove {
+    opacity: 0.5;
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 20px;
+    &:hover {
+      opacity: 0.8;
+    }
+
+    mat-icon {
+      color: #ff0000;
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  .add_filter {
+    width: fit-content;
+    margin: 10px auto 20px;
+
+    .add_button {
+      border-style: none;
+      background-color: #fff;
+
+      .cross {
+        width: 23px;
+        height: 23px;
+        vertical-align: middle;
+        fill: #3ba4e5;
+        margin-right: 7px;
+      }
+    }
+
+    .add {
+      border-bottom-style: solid;
+      border-bottom-color: black;
+      border-bottom-width: 1px;
+    }
+  }
+
+  .filter_buttons {
+    text-align: center;
+    margin-bottom: 20px;
+    button {
+      height: 42px;
+      width: 145px;
+      font-size: 14px;
+      border-radius: 30px;
+      border-style: none;
+      transition: 0.3s;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      &:hover {
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .filter {
+      background-color: #1851a0;
+      color: #fff;
+    }
+
+    .reset {
+      background-color: #fff;
+      color: #777777;
+      margin-left: 20px;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 3px;
+}
+::-webkit-scrollbar-button {
+  background-color: #ede5e3;
+  height: 0;
+}
+::-webkit-scrollbar-track {
+  background-color: #999;
+}
+::-webkit-scrollbar-track-piece {
+  background-color: #fafafa;
+}
+::-webkit-scrollbar-thumb {
+  height: 50px;
+  background-color: #c1c1c1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-corner {
+  background-color: #999;
+}
+::-webkit-resizer {
+  background-color: #666;
+}
